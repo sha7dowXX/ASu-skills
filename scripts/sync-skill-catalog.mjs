@@ -16,6 +16,7 @@
  *   - .workbuddy-plugin/install.md 的目录清单区
  *   - README.md / README_en.md 的入口总览区
  *   - .github/ISSUE_TEMPLATE/*.yml 的“相关技能”选项
+ *   - 输出统一以 LF 为行尾；--check 不受工作区 CRLF 检出影响
  */
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -46,8 +47,12 @@ function withRegion(text, id, kind, body) {
   const tail = text.slice(lineEnd + 1);
   return text.slice(0, lineStart) + block + NL + tail;
 }
-function read(rel) { return readFileSync(join(ROOT, rel), 'utf8'); }
-function write(rel, text) { writeFileSync(join(ROOT, rel), text.endsWith(NL) ? text : text + NL); }
+function read(rel) { return readFileSync(join(ROOT, rel), 'utf8').replace(/\r\n?/g, NL); }
+function readRaw(rel) { return readFileSync(join(ROOT, rel), 'utf8'); }
+function write(rel, text) {
+  const lf = text.replace(/\r\n?/g, NL);
+  writeFileSync(join(ROOT, rel), lf.endsWith(NL) ? lf : lf + NL);
+}
 
 // ------------------------------------------------ inputs
 const registry = JSON.parse(read('skills.registry.json'));
@@ -274,20 +279,29 @@ for (const t of regionTargets) {
   stage(t.rel, text, withRegion(text, t.id, t.kind, t.body));
 }
 
-if (changes.length) {
-  if (CHECK) {
+if (CHECK) {
+  if (changes.length) {
     console.error('skill catalog drift detected:');
     for (const c of changes) console.error('  - ' + c);
     console.error('请运行 node scripts/sync-skill-catalog.mjs 后重新提交。');
     process.exit(1);
   }
-  for (const [rel, next] of fileTargets) write(rel, next);
+  console.log('skill catalog sync OK (' + entries.length + ' entries, nothing to change)');
+} else {
+  const synced = [];
+  for (const [rel, next] of fileTargets) {
+    if (readRaw(rel) !== next) { write(rel, next); synced.push(rel); }
+  }
   for (const t of regionTargets) {
     const text = read(t.rel);
-    write(t.rel, withRegion(text, t.id, t.kind, t.body));
+    const next = withRegion(text, t.id, t.kind, t.body);
+    if (readRaw(t.rel) !== next) { write(t.rel, next); synced.push(t.rel); }
   }
-  console.log('synced ' + changes.length + ' target(s):');
-  for (const c of changes) console.log('  - ' + c);
-} else {
-  console.log('skill catalog sync OK (' + entries.length + ' entries, nothing to change)');
+  const uniqSynced = [...new Set(synced)];
+  if (uniqSynced.length) {
+    console.log('synced ' + uniqSynced.length + ' file(s):');
+    for (const c of uniqSynced) console.log('  - ' + c + (changes.includes(c) ? '' : '（行尾统一为 LF）'));
+  } else {
+    console.log('skill catalog sync OK (' + entries.length + ' entries, nothing to change)');
+  }
 }

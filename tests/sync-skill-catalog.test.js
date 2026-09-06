@@ -33,3 +33,26 @@ test('sync --check passes: every generated artifact is in sync', () => {
   const out = execFileSync(process.execPath, [syncScript, '--check'], { cwd: ROOT, encoding: 'utf8' });
   assert.match(out, /sync OK/);
 });
+
+test('generated catalog files use LF line endings', () => {
+  const rels = [
+    '.codex-plugin/plugin.json',
+    '.trae-plugin/plugin.json',
+    '.claude-plugin/plugin.json',
+    '.claude-plugin/marketplace.json',
+    '.opencode-plugin/plugin.json',
+    'package.json',
+    '.opencode-plugin/install-opencode.py',
+    '.workbuddy-plugin/install.sh',
+    '.workbuddy-plugin/install.ps1',
+    '.workbuddy-plugin/install.md',
+    'README.md',
+    'README_en.md',
+    '.github/ISSUE_TEMPLATE/bug_report.yml',
+    '.github/ISSUE_TEMPLATE/feature_request.yml',
+  ];
+  for (const rel of rels) {
+    const text = readFileSync(join(ROOT, rel), 'utf8');
+    assert.ok(!text.includes('\r'), rel + ' must use LF line endings');
+  }
+});
