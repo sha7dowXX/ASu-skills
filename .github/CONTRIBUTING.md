@@ -15,7 +15,7 @@
    - Markdown 改动在本地渲染预览；
    - HTML 模板在浏览器中打开，确认可编辑、可保存，并可导出 A4；
    - 涉及 `SKILL.md`、`agents/openai.yaml`、插件清单或新增 skill 时，在仓库根目录运行 `python3 scripts/validate_skills.py`，确认 frontmatter、元数据与资源引用校验通过；
-   - 新增、删除或重命名 skill 入口时，先更新根目录 `skills.registry.json`，再运行 `npm run sync:skills` 同步各插件清单、安装脚本、Issue 模板与 README 总览，并确认 `npm run sync:skills -- --check` 通过；
+   - 新增、删除或重命名 skill 入口时，先更新根目录 `skills.registry.json`，再运行 `npm run sync:skills` 同步各插件清单、安装脚本、Issue 模板与 README 总览，并确认 `npm run sync:skills --check` 通过；
 4. 提交信息遵循 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)，使用 `feat:`、`fix:`、`docs:` 等英文类型前缀，并附简洁、具体的中文标题；
 5. 创建 Pull Request 前，请完整阅读本文件与 [`PULL_REQUEST_TEMPLATE.md`](PULL_REQUEST_TEMPLATE.md)，并逐项完成模板中的检查清单；
 6. Pull Request 描述应说明改动内容、变更原因与验证方式；如确有无法完成的检查项，请说明原因并提供替代验证方式。
