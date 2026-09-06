@@ -50,23 +50,25 @@
 - [开源协议](#开源协议)
 - [Star History](#star-history)
 
+<!-- catalog:readme.zh.intro:begin -->
 ASu-skills 现在是一个插件包。安装后会提供九个可单独调用的入口：
 
-| 入口               | 用途         | 主要交付                                                          |
-| ------------------ | ------------ | ----------------------------------------------------------------- |
-| `/contributor`   | 开源贡献     | 寻找候选、展示 diff，经确认后提交 PR并把贡献交给`/great-resume` |
-| `/evidence-recap` | 证据复盘     | 把 AI 编程对话和交付记录整理为可核验的九段证据链                  |
+| 入口 | 用途 | 主要交付 |
+| --- | --- | --- |
+| `/contributor` | 开源贡献 | 寻找候选、展示 diff，经确认后提交 PR并把贡献交给`/great-resume` |
+| `/evidence-recap` | 证据复盘 | 把 AI 编程对话和交付记录整理为可核验的九段证据链 |
 | `/project-guide` | 项目导学面经 | 基于项目仓库生成`导学-{简称}.md`、`面经-{简称}.md` 和交接摘要 |
-| `/great-resume`  | 简历提升     | 岗位定位、项目改写、成果证据、HR 开场白                           |
-| `/make-resume`   | 简历制作     | 默认使用 ASu 模板，也可指定模板；可编辑 HTML 简历和 PDF 导出       |
-| `/job-match`     | 岗位匹配     | 对照 JD 与真实经历，输出证据矩阵、硬性门槛和投递建议              |
-| `/job-apply`     | 简历投递填写 | 连接浏览器自动填写求职申请，核对后停在提交前                      |
-| `/interview`     | 面试准备     | 面试预测、契约化追问、证据复盘和弱项复练                          |
-| `/offer`         | 校招进度     | 投递、测评、面试、Offer、拒信和招聘邮件跟踪                       |
+| `/great-resume` | 简历提升 | 岗位定位、项目改写、成果证据、HR 开场白 |
+| `/make-resume` | 简历制作 | 默认使用 ASu 模板，也可指定模板；可编辑 HTML 简历和 PDF 导出 |
+| `/job-match` | 岗位匹配 | 对照 JD 与真实经历，输出证据矩阵、硬性门槛和投递建议 |
+| `/job-apply` | 简历投递填写 | 连接浏览器自动填写求职申请，核对后停在提交前 |
+| `/interview` | 面试准备 | 面试预测、契约化追问、证据复盘和弱项复练 |
+| `/offer` | 校招进度管理 | 投递、测评、面试、Offer、拒信和招聘邮件跟踪 |
+<!-- catalog:readme.zh.intro:end -->
 
 ## 安装
 
-ASu-skills 同时支持 Codex、Claude Code 和 TraeWork：仓库根目录的 `.codex-plugin/` 供 Codex 使用，`.claude-plugin/` 供 Claude Code 使用，`.trae-plugin/` 供 TraeWork 使用，三者共用同一套 `skills/`、`assets/` 和 `references/`。
+ASu-skills 同时支持 Codex、Claude Code 和 TraeWork，另有 OpenCode 与 WorkBuddy 的轻量桥接入口：仓库根目录的 `.codex-plugin/` 供 Codex 使用，`.claude-plugin/` 供 Claude Code 使用，`.trae-plugin/` 供 TraeWork 使用，`.opencode-plugin/`、`.workbuddy-plugin/` 提供社区安装入口；所有入口共用同一套 `skills/`、`assets/` 和 `references/`。入口清单以根目录 `skills.registry.json` 为单一事实源，由 `npm run sync:skills` 生成并对账（CI 以 `--check` 校验）。
 
 ### Codex
 
@@ -386,49 +388,39 @@ asu-skills/
 │   ├── plugin.json              # Claude Code 插件清单
 │   └── marketplace.json         # Claude Code 插件市场清单
 ├── .codex-plugin/
-│   └── plugin.json              # 插件清单
+│   └── plugin.json              # Codex 插件清单
 ├── .trae-plugin/
 │   └── plugin.json              # TraeWork 插件清单
+├── .opencode-plugin/
+│   ├── plugin.json              # OpenCode 插件清单（skills.entries 由 registry 生成）
+│   ├── install-opencode.py      # OpenCode 安装脚本（技能名单由 registry 生成）
+│   └── installation-guide.md    # OpenCode 手动安装指南
+├── .workbuddy-plugin/
+│   ├── install.md               # WorkBuddy 桥接说明（清单区由 registry 生成）
+│   ├── install.sh               # macOS / Linux 桥接脚本
+│   └── install.ps1              # Windows 桥接脚本
+├── skills.registry.json        # ★ 入口目录单一事实源：新增/删除入口先改这里，再 npm run sync:skills
 ├── package.json                # DSH 插件包清单（bundle patch 入口）
 ├── cordis.patch.yml            # 注册 DSH filesystem skill 提供方
 ├── lib/
 │   └── index.js                # DSH 插件入口模块
-├── skills/
-│   ├── great-resume/
-│   │   ├── SKILL.md             # /great-resume 简历提升
-│   │   └── agents/openai.yaml
-│   ├── contributor/
-│   │   ├── SKILL.md             # /contributor 开源贡献
-│   │   └── agents/openai.yaml
-│   ├── evidence-recap/
-│   │   ├── SKILL.md             # /evidence-recap AI 编程对话复盘
-│   │   └── agents/openai.yaml
-│   ├── project-guide/
-│   │   ├── SKILL.md             # /project-guide 项目导学面经
-│   │   └── agents/openai.yaml
-│   ├── make-resume/
-│   │   ├── SKILL.md             # /make-resume 简历制作
-│   │   └── agents/openai.yaml
-│   ├── job-match/
-│   │   ├── SKILL.md             # /job-match 岗位匹配分析
-│   │   └── agents/openai.yaml
-│   ├── interview/
-│   │   ├── SKILL.md             # /interview 面试预测、追问与复练
-│   │   ├── references/          # 面试契约、评分、场景题和复练规则
-│   │   └── agents/openai.yaml
-│   ├── offer/
-│       ├── SKILL.md             # /offer 校招进度
-│       └── agents/openai.yaml
-│   └── job-apply/
-│       ├── SKILL.md             # /job-apply 简历投递填写
-│       ├── references/           # Kimi WebBridge 连接与安全规则
-│       └── agents/openai.yaml
+├── skills/                     # 全部入口目录（与 skills.registry.json 一一对应）
+│   ├── contributor/            # /contributor 开源贡献
+│   ├── evidence-recap/         # /evidence-recap AI 编程对话复盘
+│   ├── great-resume/           # /great-resume 简历提升
+│   ├── interview/              # /interview 面试预测、追问与复练
+│   ├── job-apply/              # /job-apply 简历投递填写（依赖浏览器桥接）
+│   ├── job-match/              # /job-match 岗位匹配分析
+│   ├── make-resume/            # /make-resume 简历制作
+│   ├── offer/                  # /offer 校招进度管理
+│   └── project-guide/          # /project-guide 项目导学面经
 ├── scripts/
-│   └── kimi-webbridge.mjs       # Kimi WebBridge 本机 HTTP 客户端
-├── assets/                      # 模板、图片、进度表和示例资源
+│   ├── sync-skill-catalog.mjs  # ★ 从 registry 生成/对账各入口清单（npm run sync:skills）
+│   └── kimi-webbridge.mjs      # Kimi WebBridge 本机 HTTP 客户端
+├── assets/                     # 模板、图片、进度表和示例资源
 │   ├── asu-resume-template.html # ASu 同款可编辑简历起点
-│   ├── icons/                    # 个人信息与通用信息 SVG 图标
-│   └── logos/                    # LobeHub Icons 静态 SVG Logo
+│   ├── icons/                   # 个人信息与通用信息 SVG 图标
+│   └── logos/                   # LobeHub Icons 静态 SVG Logo
 ├── references/                  # 招聘邮箱整理参考
 ├── .github/
 │   ├── CONTRIBUTING.md          # 贡献指南
@@ -440,6 +432,8 @@ asu-skills/
 ## 参与贡献
 
 欢迎提 Issue 和 PR，详见[贡献指南](.github/CONTRIBUTING.md)。也可以直接查看 [Pull Requests](https://github.com/Hisn00w/ASu-skills/pulls)。
+
+新增、删除或重命名入口时，先更新 [`skills.registry.json`](skills.registry.json)，再运行 `npm run sync:skills` 同步全部插件清单、安装脚本、Issue 模板与 README 总览；CI 会以 `npm run sync:skills -- --check` 校验一致性。
 
 ## 致谢
 

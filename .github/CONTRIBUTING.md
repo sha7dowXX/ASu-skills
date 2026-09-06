@@ -15,6 +15,7 @@
    - Markdown 改动在本地渲染预览；
    - HTML 模板在浏览器中打开，确认可编辑、可保存，并可导出 A4；
    - 涉及 `SKILL.md`、`agents/openai.yaml`、插件清单或新增 skill 时，在仓库根目录运行 `python3 scripts/validate_skills.py`，确认 frontmatter、元数据与资源引用校验通过；
+   - 新增、删除或重命名 skill 入口时，先更新根目录 `skills.registry.json`，再运行 `npm run sync:skills` 同步各插件清单、安装脚本、Issue 模板与 README 总览，并确认 `npm run sync:skills -- --check` 通过；
 4. 提交信息遵循 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)，使用 `feat:`、`fix:`、`docs:` 等英文类型前缀，并附简洁、具体的中文标题；
 5. 创建 Pull Request 前，请完整阅读本文件与 [`PULL_REQUEST_TEMPLATE.md`](PULL_REQUEST_TEMPLATE.md)，并逐项完成模板中的检查清单；
 6. Pull Request 描述应说明改动内容、变更原因与验证方式；如确有无法完成的检查项，请说明原因并提供替代验证方式。
@@ -27,7 +28,7 @@
 python3 scripts/validate_skills.py
 ```
 
-校验内容包括：`SKILL.md` 是否存在、frontmatter 是否可解析、`name` 是否与目录名一致、`description` 是否非空且不过长、`agents/openai.yaml` 是否可解析、`SKILL.md` 引用的本地 `references/assets` 路径是否存在，以及 Codex、TraeWork、Claude Code、OpenCode 插件清单是否为合法 JSON 并覆盖必要入口。GitHub Actions 会在涉及 `skills/**` 等路径的 Pull Request 上自动运行该校验。
+校验内容包括：`SKILL.md` 是否存在、frontmatter 是否可解析、`name` 是否与目录名一致、`description` 是否非空且不过长、`agents/openai.yaml` 是否可解析、`SKILL.md` 引用的本地 `references/assets` 路径是否存在，以及 Codex、TraeWork、Claude Code、OpenCode 插件清单是否为合法 JSON 并覆盖必要入口。入口清单以根目录 `skills.registry.json` 为单一事实源；新增/调整入口时先更新该文件并运行 `npm run sync:skills`，GitHub Actions 会以 `node scripts/sync-skill-catalog.mjs --check` 校验所有派生清单一致。该校验会在涉及 `skills/**` 等路径的 Pull Request 上自动运行。
 
 路由回归用例存放在 `tests/skill-routing-cases.yaml`，记录各求职入口的预期路由，由 GitHub Actions 执行不调用 LLM 的确定性 schema 校验。校验会检查 YAML 结构、用例字段、重复 prompt，以及 `expected` 是否对应 `skills/` 下的实际目录；它不判断 prompt 的语义路由结果。
 

@@ -15,6 +15,7 @@ Contributions via Issues and Pull Requests are welcome. To keep collaboration qu
    - Preview Markdown changes locally;
    - Open HTML templates in a browser and confirm they edit, save, and export to A4;
    - When touching `SKILL.md`, `agents/openai.yaml`, plugin manifests, or adding a new skill, run `python3 scripts/validate_skills.py` from the repository root and confirm frontmatter, metadata, and resource references pass validation;
+   - When adding, removing, or renaming a skill entry, first update `skills.registry.json`, then run `npm run sync:skills` to regenerate every plugin manifest, installer, issue template, and README overview, and confirm `npm run sync:skills -- --check` passes;
 4. Commit with [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): use English type prefixes such as `feat:`, `fix:`, `docs:`, with a short, specific title;
 5. Before opening a Pull Request, read this file and [`PULL_REQUEST_TEMPLATE.md`](PULL_REQUEST_TEMPLATE.md) in full, and complete every item in the template's checklist;
 6. The Pull Request description should state what changed, why, and how it was verified. If you cannot complete a checklist item, explain why and offer an alternative verification.
@@ -27,7 +28,7 @@ After modifying `SKILL.md`, `agents/openai.yaml`, plugin manifests, or adding a 
 python3 scripts/validate_skills.py
 ```
 
-The validator checks that each `SKILL.md` exists; its frontmatter parses; `name` matches the directory name; `description` is non-empty and not too long; `agents/openai.yaml` parses; local `references/assets` paths cited in `SKILL.md` exist; and the Codex, TraeWork, Claude Code, and OpenCode plugin manifests are valid JSON covering the required entries. GitHub Actions runs this validator automatically on Pull Requests that touch `skills/**` and related paths.
+The validator checks that each `SKILL.md` exists; its frontmatter parses; `name` matches the directory name; `description` is non-empty and not too long; `agents/openai.yaml` parses; local `references/assets` paths cited in `SKILL.md` exist; and the Codex, TraeWork, Claude Code, and OpenCode plugin manifests are valid JSON covering the required entries. The entry catalog is maintained in `skills.registry.json` as the single source of truth; after adding or adjusting entries, update that file and run `npm run sync:skills`. GitHub Actions also runs `node scripts/sync-skill-catalog.mjs --check` on Pull Requests that touch `skills/**` and related paths.
 
 Routing regression cases live in `tests/skill-routing-cases.yaml`. GitHub Actions validates their YAML structure, fields, duplicate prompts, and whether `expected` maps to an actual directory under `skills/`, without calling an LLM; it does not judge the semantic routing result.
 
