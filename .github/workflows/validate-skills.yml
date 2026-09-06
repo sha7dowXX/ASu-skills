@@ -8,6 +8,7 @@ on:
       - '.trae-plugin/**'
       - '.claude-plugin/**'
       - '.opencode-plugin/**'
+      - 'skills.registry.json'
       - 'package.json'
       - 'assets/templates-html/**'
       - 'lib/**'
@@ -23,6 +24,7 @@ on:
       - '.trae-plugin/**'
       - '.claude-plugin/**'
       - '.opencode-plugin/**'
+      - 'skills.registry.json'
       - 'package.json'
       - 'assets/templates-html/**'
       - 'lib/**'
@@ -56,6 +58,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.19.0'
+
+      - name: Check skill catalog sync
+        run: node scripts/sync-skill-catalog.mjs --check
 
       - name: Run JavaScript tests
         run: node --test

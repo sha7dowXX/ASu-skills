@@ -7,6 +7,8 @@
   "scripts": {
     "export:pdf": "node scripts/export-resume-pdf.mjs",
     "build:templates": "node scripts/inline-template.mjs --all dist/templates",
+    "sync:skills": "node scripts/sync-skill-catalog.mjs",
+    "sync:skills:check": "node scripts/sync-skill-catalog.mjs --check",
     "validate:skills": "python3 scripts/validate_skills.py",
     "test:python": "python3 -m unittest discover -s tests -v",
     "test": "node --test"
@@ -30,9 +32,6 @@
     "dsh-plugin",
     "deepseek-harness",
     "agent-skill",
-    "evidence-recap",
-    "project-guide",
-    "project-analysis",
     "resume",
     "job-search",
     "job-match",
@@ -41,7 +40,15 @@
     "career",
     "open-source",
     "chinese",
-    "great-resume"
+    "project-analysis",
+    "contributor",
+    "evidence-recap",
+    "project-guide",
+    "great-resume",
+    "make-resume",
+    "job-apply",
+    "interview",
+    "offer"
   ],
   "engines": {
     "node": "^22.19.0 || >=24.0.0"

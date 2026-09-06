@@ -62,23 +62,25 @@ ASu is building a Harness project tailored to the job-search journey. We welcome
 
 [Check out the ASu Harness project on GitHub](https://github.com/Hisn00w/ASu-skills)
 
+<!-- catalog:readme.en.intro:begin -->
 ASu-skills is now a plugin pack. Installing it provides nine individually callable entry points:
 
-| Entry          | Purpose                   | Primary deliverables                                              |
-| -------------- | ------------------------ | ----------------------------------------------------------------- |
+| Entry | Purpose | Primary deliverables |
+| --- | --- | --- |
 | `/contributor` | Open-source contributions | Finds candidates, shows diffs, submits a PR after your confirmation, and hands the contribution to `/great-resume` |
-| `/evidence-recap` | Conversation review      | Turns AI coding conversations and delivery records into a verifiable nine-part evidence chain |
+| `/evidence-recap` | Conversation review | Turns AI coding conversations and delivery records into a verifiable nine-part evidence chain |
 | `/project-guide` | Project interview prep | Generates `导学-{short-name}.md`, `面经-{short-name}.md`, and handoff evidence from a project repository |
-| `/great-resume` | Resume improvement       | Role targeting, project bullet rewrites, evidence of results, HR opener |
-| `/make-resume`      | Resume building          | Defaults to the ASu template, supports custom templates, editable HTML resume and PDF export |
-| `/job-match`   | Job matching | Compares a JD with verified experience and returns an evidence matrix, hard constraints, and an application recommendation |
-| `/job-apply`   | Job-application autofill | Connects to a browser, fills an application, and stops for review before submission |
-| `/interview`   | Interview preparation    | Interview prediction, contract-driven drilling, evidence review, and targeted retry |
-| `/offer`       | Campus recruitment tracking | Tracks applications, assessments, interviews, offers, rejections, and recruiting emails |
+| `/great-resume` | Resume improvement | Role targeting, project bullet rewrites, evidence of results, HR opener |
+| `/make-resume` | Resume building | Defaults to the ASu template, supports custom templates, editable HTML resume and PDF export |
+| `/job-match` | Job matching | Compares a JD with verified experience and returns an evidence matrix, hard constraints, and an application recommendation |
+| `/job-apply` | Job-application autofill | Connects to a browser, fills an application, and stops for review before submission |
+| `/interview` | Interview preparation | Interview prediction, contract-driven drilling, evidence review, and targeted retry |
+| `/offer` | Campus recruitment tracking | Tracks applications, assessments, interviews, offers, rejections, and recruiting emails |
+<!-- catalog:readme.en.intro:end -->
 
 ## Installation
 
-ASu-skills works with Codex, Claude Code, and TraeWork: the repo root has `.codex-plugin/` for Codex, `.claude-plugin/` for Claude Code, and `.trae-plugin/` for TraeWork, all sharing the same `skills/`, `assets/`, and `references/`.
+ASu-skills works with Codex, Claude Code, and TraeWork, plus lightweight OpenCode and WorkBuddy bridges: the repo root has `.codex-plugin/` for Codex, `.claude-plugin/` for Claude Code, `.trae-plugin/` for TraeWork, and `.opencode-plugin/`/`.workbuddy-plugin/` for community installers — all sharing the same `skills/`, `assets/`, and `references/`. The entry catalog is maintained in `skills.registry.json` as the single source of truth and is regenerated/reconciled by `npm run sync:skills` (CI checks it with `--check`).
 
 ### Codex
 
@@ -401,46 +403,36 @@ asu-skills/
 │   ├── plugin.json              # Claude Code plugin manifest
 │   └── marketplace.json         # Claude Code plugin marketplace manifest
 ├── .codex-plugin/
-│   └── plugin.json              # Plugin manifest
+│   └── plugin.json              # Codex plugin manifest
 ├── .trae-plugin/
 │   └── plugin.json              # TraeWork plugin manifest
-├── package.json                 # DSH plugin pack manifest (bundle patch entry)
-├── cordis.patch.yml             # Registers the DSH filesystem skill provider
+├── .opencode-plugin/
+│   ├── plugin.json              # OpenCode plugin manifest (skills.entries generated from the registry)
+│   ├── install-opencode.py      # OpenCode installer (skill list generated from the registry)
+│   └── installation-guide.md    # OpenCode manual installation guide
+├── .workbuddy-plugin/
+│   ├── install.md               # WorkBuddy bridge guide (catalog blocks generated from the registry)
+│   ├── install.sh               # macOS / Linux bridge script
+│   └── install.ps1              # Windows bridge script
+├── skills.registry.json        # ★ Single source of truth for the entry catalog; run npm run sync:skills after changing it
+├── package.json                # DSH plugin pack manifest (bundle patch entry)
+├── cordis.patch.yml            # Registers the DSH filesystem skill provider
 ├── lib/
-│   └── index.js                 # DSH plugin entry module
-├── skills/
-│   ├── great-resume/
-│   │   ├── SKILL.md             # /great-resume experience improvement
-│   │   └── agents/openai.yaml
-│   ├── contributor/
-│   │   ├── SKILL.md             # /contributor open-source contributions
-│   │   └── agents/openai.yaml
-│   ├── evidence-recap/
-│   │   ├── SKILL.md             # /evidence-recap AI coding conversation review
-│   │   └── agents/openai.yaml
-│   ├── project-guide/
-│   │   ├── SKILL.md             # /project-guide project study notes and interview answers
-│   │   └── agents/openai.yaml
-│   ├── make-resume/
-│   │   ├── SKILL.md             # /make-resume resume building
-│   │   └── agents/openai.yaml
-│   ├── job-match/
-│   │   ├── SKILL.md             # /job-match job-match analysis
-│   │   └── agents/openai.yaml
-│   ├── interview/
-│   │   ├── SKILL.md             # /interview prediction, drilling & targeted retry
-│   │   ├── references/          # Interview contracts, scoring, scenarios & retry rules
-│   │   └── agents/openai.yaml
-│   ├── offer/
-│       ├── SKILL.md             # /offer campus recruitment tracking
-│       └── agents/openai.yaml
-│   └── job-apply/
-│       ├── SKILL.md             # /job-apply job-application autofill
-│       ├── references/          # Kimi WebBridge connection and safety rules
-│       └── agents/openai.yaml
+│   └── index.js                # DSH plugin entry module
+├── skills/                     # Every entry directory (one-to-one with skills.registry.json)
+│   ├── contributor/            # /contributor open-source contributions
+│   ├── evidence-recap/         # /evidence-recap AI coding conversation review
+│   ├── great-resume/           # /great-resume resume improvement
+│   ├── interview/              # /interview prediction, drilling & targeted retry
+│   ├── job-apply/              # /job-apply job-application autofill (browser bridge)
+│   ├── job-match/              # /job-match job-match analysis
+│   ├── make-resume/            # /make-resume resume building
+│   ├── offer/                  # /offer campus recruitment tracking
+│   └── project-guide/          # /project-guide project study notes and interview answers
 ├── scripts/
-│   └── kimi-webbridge.mjs       # Kimi WebBridge local HTTP client
-├── assets/                      # Templates, images, tracker, and example resources
+│   ├── sync-skill-catalog.mjs  # ★ Generates/reconciles every entry catalog from the registry (npm run sync:skills)
+│   └── kimi-webbridge.mjs      # Kimi WebBridge local HTTP client
+├── assets/                     # Templates, images, tracker, and example resources
 │   ├── asu-resume-template.html # Read-only master for the ASu-style editable resume
 │   ├── icons/                   # Personal & general information SVG icons
 │   └── logos/                   # LobeHub Icons static SVG logos
@@ -455,6 +447,8 @@ asu-skills/
 ## Contributing
 
 Issues and PRs are welcome. See the [contributing guide](.github/CONTRIBUTING_en.md), or browse the repository's [Pull Requests](https://github.com/Hisn00w/ASu-skills/pulls).
+
+When adding, removing, or renaming an entry, first update [`skills.registry.json`](skills.registry.json), then run `npm run sync:skills` to regenerate every plugin manifest, installer, issue template, and the README overview; CI verifies consistency with `npm run sync:skills -- --check`.
 
 ## Acknowledgments
 
